@@ -1,19 +1,24 @@
 // LogoutComponent.js
 import React from "react";
 import { useDispatch } from "react-redux";
-import { logout } from "../actions/userAction";
+import { logOut } from "../actions/userAction";
+import { useNavigate } from "react-router-dom";
+import Button from "react-bootstrap/Button";
 
 const LogoutComponent = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(logOut);
+    navigate("/login");
   };
 
   return (
     <div>
-      <h2>Logout</h2>
-      <button onClick={handleLogout}>Logout</button>
+      <Button variant="light" onClick={handleLogout}>
+        Logout
+      </Button>
     </div>
   );
 };

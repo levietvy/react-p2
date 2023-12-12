@@ -1,21 +1,24 @@
+// components/LoginPage.js
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../actions/userAction";
+import { useNavigate } from "react-router-dom";
 
 const LoginComponent = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogin = () => {
-    dispatch(login(username));
-    setUsername("");
-    setPassword("");
+    // Dispatch the login action with username and password
+    dispatch(login(username, password));
+    navigate("/dashboard");
   };
 
   return (
     <div>
-      <h2>Login</h2>
+      <h1>Login</h1>
       <input
         type="text"
         placeholder="Username"

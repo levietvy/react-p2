@@ -1,47 +1,49 @@
-let users = {
-  sarahedo: {
-    id: "sarahedo",
-    password: "password123",
-    name: "Sarah Edo",
-    avatarURL: null,
-    answers: {
-      "8xf0y6ziyjabvozdd253nd": "optionOne",
-      "6ni6ok3ym7mf1p33lnez": "optionOne",
-      am8ehyc8byjqgar0jgpub9: "optionTwo",
-      loxhs1bqm25b708cmbf3g: "optionTwo",
-    },
-    questions: ["8xf0y6ziyjabvozdd253nd", "am8ehyc8byjqgar0jgpub9"],
-  },
-  tylermcginnis: {
-    id: "tylermcginnis",
-    password: "abc321",
-    name: "Tyler McGinnis",
-    avatarURL: null,
-    answers: {
-      vthrdm985a262al8qx3do: "optionOne",
-      xj352vofupe1dqz9emx13r: "optionTwo",
-    },
-    questions: ["loxhs1bqm25b708cmbf3g", "vthrdm985a262al8qx3do"],
-  },
-  mtsamis: {
-    id: "mtsamis",
-    password: "xyz123",
-    name: "Mike Tsamis",
-    avatarURL: null,
-    answers: {
-      xj352vofupe1dqz9emx13r: "optionOne",
-      vthrdm985a262al8qx3do: "optionTwo",
-      "6ni6ok3ym7mf1p33lnez": "optionOne",
-    },
-    questions: ["6ni6ok3ym7mf1p33lnez", "xj352vofupe1dqz9emx13r"],
-  },
+import { _getUsers } from "../utils/_DATA";
+
+export const login = (username, password) => {
+  return async (dispatch) => {
+    try {
+      const users = await _getUsers(); // Await the asynchronous call
+
+      let user = null;
+      user = await authenticatedUser(username, password, users);
+
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user));
+        dispatch(loginSuccess(user));
+      } else {
+        dispatch(loginFailure("Wrong username or password"));
+      }
+    } catch (error) {
+      dispatch(loginFailure(error.message));
+    }
+  };
 };
 
-export const login = (users) => ({
-  type: "LOGIN",
-  payload: users,
-});
+const authenticatedUser = (username, password, users) => {
+  for (const [userId, user] of Object.entries(users)) {
+    if (user.id === username && user.password === password) {
+      return user;
+    }
+  }
+  return null;
+};
 
-export const logout = () => ({
-  type: "LOGOUT",
-});
+export const loginSuccess = (user) => {
+  localStorage.setItem("user", JSON.stringify(user));
+  return { type: "LOGIN_SUCCESS", user };
+};
+
+export const loginFailure = (error) => {
+  return {
+    type: "LOGIN_FAILURE",
+    error,
+  };
+};
+
+export const logOut = () => {
+  localStorage.removeItem("user");
+  return {
+    type: "LOGOUT",
+  };
+};
